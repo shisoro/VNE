@@ -2,7 +2,11 @@
 class Application
 {
 public:
-    void initialize();
+    bool initialize();
     void run();
     void shutdown();
+
+private:
+    bool initialized = false;
+    bool running = false;    
 };

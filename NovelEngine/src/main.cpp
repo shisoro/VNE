@@ -4,9 +4,13 @@ int main()
 {
     Application app;
 
-    app.initialize();
+    if(!app.initialize())
+    {
+        return 1;
+    }
+    
     app.run();
     app.shutdown();
-    
+
     return 0;
 }
