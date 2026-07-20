@@ -40,7 +40,7 @@ void Application::run()
 
         if (frameCount >= 3)
         {
-            running = false;
+            requestQuit();
         }
     }
 }
@@ -71,4 +71,10 @@ void Application::update()
 void Application::render()
 {
     std::cout << "Render frame." << std::endl;
+}
+
+void Application::requestQuit()
+{
+    std::cout << "Quit requested." << std::endl;
+    running = false;
 }
