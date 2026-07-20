@@ -3,7 +3,7 @@
 
 bool Application::initialize()
 {
-    if (initialized)
+    if (state != State::Uninitialized)
     {
         std::cout << "Application initialized." << std::endl;
         return true;
@@ -11,24 +11,24 @@ bool Application::initialize()
 
     std::cout << "Application initialized." << std::endl;
 
-    initialized = true;
+    state = State::Initialized;
     return true;
 }
 
 void Application::run()
 {
-    if (!initialized)
+    if (state != State::Initialized)
     {
         std::cerr << "Application must be initialized before run()."
                   << std::endl;
         return;
     }
 
-    running = true;
+    state = State::Running;
 
     int frameCount = 0;
 
-    while (running)
+    while (state == State::Running)
     {
         std::cout << "Frame: " << frameCount << std::endl;
 
@@ -47,13 +47,12 @@ void Application::run()
 
 void Application::shutdown()
 {
-    if(!initialized)
+    if(state == State::Uninitialized)
     {
         return;
     }
 
-    running = false;
-    initialized = false;
+    state = State::Uninitialized;
     
     std::cout << "Application shut down." << std::endl;
 }
@@ -75,6 +74,12 @@ void Application::render()
 
 void Application::requestQuit()
 {
+    if (state != State::Running)
+    {
+        return;
+    }
+
     std::cout << "Quit requested." << std::endl;
-    running = false;
+    
+    state = State::Initialized;
 }

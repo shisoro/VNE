@@ -7,11 +7,17 @@ public:
     void shutdown();
 
 private:
+    enum class State
+    {
+        Uninitialized,
+        Initialized,
+        Running
+    };
+
     void processInput();
     void update();
     void render();
     void requestQuit();
 
-    bool initialized = false;
-    bool running = false;    
+    State state = State::Uninitialized;
 };
