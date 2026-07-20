@@ -32,6 +32,10 @@ void Application::run()
     {
         std::cout << "Frame: " << frameCount << std::endl;
 
+        processInput();
+        update();
+        render();
+
         ++frameCount;
 
         if (frameCount >= 3)
@@ -52,4 +56,19 @@ void Application::shutdown()
     initialized = false;
     
     std::cout << "Application shut down." << std::endl;
+}
+
+void Application::processInput()
+{
+    std::cout << "Process input." << std::endl;    
+}
+
+void Application::update()
+{
+    std::cout << "Update game state." << std::endl;
+}
+
+void Application::render()
+{
+    std::cout << "Render frame." << std::endl;
 }
