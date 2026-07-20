@@ -1,5 +1,4 @@
-#pragma once    // ヘッダーファイルの多重インクルードを防ぐ
-
+#pragma once    
 class Application
 {
 public:

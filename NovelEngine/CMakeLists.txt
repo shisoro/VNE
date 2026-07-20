@@ -7,3 +7,10 @@ add_executable(     # 実行ファイルを作る
     src/main.cpp    # 使用するソース
     src/Application.cpp
 )
+
+# NovelEngineをC++17としてコンパイル
+target_compile_features(
+    NovelEngine
+    PRIVATE
+    cxx_std_17
+)

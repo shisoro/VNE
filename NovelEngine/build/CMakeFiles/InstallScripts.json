@@ -1,7 +1,7 @@
 {
 	"InstallScripts" : 
 	[
-		"C:/Users/\u6d77\u7fd4/Desktop/NovelEngine/build/cmake_install.cmake"
+		"C:/VNE/NovelEngine/build/cmake_install.cmake"
 	],
 	"Parallel" : false
 }
