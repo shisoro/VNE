@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="18.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\Users\海翔\Desktop\NovelEngine\build\CMakeFiles\d45d5e060284f93c7725f26ab757497c\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{35108591-4815-3299-A0F1-E89D76BD0138}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

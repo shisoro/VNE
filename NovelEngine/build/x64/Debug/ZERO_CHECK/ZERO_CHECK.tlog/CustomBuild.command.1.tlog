@@ -1,0 +1,10 @@
+^C:\USERS\海翔\DESKTOP\NOVELENGINE\BUILD\CMAKEFILES\D45D5E060284F93C7725F26AB757497C\GENERATE.STAMP.RULE
+setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/Users/海翔/Desktop/NovelEngine -BC:/Users/海翔/Desktop/NovelEngine/build --check-stamp-list CMakeFiles/generate.stamp.list --vs-solution-file C:/Users/海翔/Desktop/NovelEngine/build/NovelEngine.slnx
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal & call :cmErrorLevel %errorlevel% & goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd
