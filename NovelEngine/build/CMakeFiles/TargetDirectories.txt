@@ -1,3 +1,0 @@
-C:/VNE/NovelEngine/build/CMakeFiles/NovelEngine.dir
-C:/VNE/NovelEngine/build/CMakeFiles/ALL_BUILD.dir
-C:/VNE/NovelEngine/build/CMakeFiles/ZERO_CHECK.dir

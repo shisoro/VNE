@@ -1,4 +1,5 @@
 #include "Application.hpp"
+#include <SDL3/SDL.h>
 #include <chrono>
 #include <iostream>
 
@@ -10,9 +11,19 @@ bool Application::initialize()
         return true;
     }
 
+    if (!SDL_Init(SDL_INIT_VIDEO))
+    {
+        std::cerr << "Failed to initialize SDL: "
+                  << SDL_GetError()
+                  << std::endl;
+
+        return false;
+    }
+
     std::cout << "Application initialized." << std::endl;
 
     state = State::Initialized;
+
     return true;
 }
 
@@ -65,6 +76,8 @@ void Application::shutdown()
     {
         return;
     }
+
+    SDL_Quit();
 
     state = State::Uninitialized;
     
