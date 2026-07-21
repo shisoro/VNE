@@ -1,4 +1,7 @@
 #pragma once    
+
+struct SDL_Window;  
+
 class Application
 {
 public:
@@ -14,10 +17,11 @@ private:
         Running
     };
 
-    void processInput();
+    void processEvents();
     void update(double deltaTime);
     void render();
     void requestQuit();
 
     State state = State::Uninitialized;
+    SDL_Window* window = nullptr;
 };

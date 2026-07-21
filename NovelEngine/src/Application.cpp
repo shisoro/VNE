@@ -2,12 +2,16 @@
 #include <SDL3/SDL.h>
 #include <chrono>
 #include <iostream>
+#include <thread>
 
+// 設定の初期化
 bool Application::initialize()
 {
     if (state != State::Uninitialized)
     {
-        std::cout << "Application initialized." << std::endl;
+        std::cout << "Application initialized." 
+                  << std::endl;
+
         return true;
     }
 
@@ -20,13 +24,31 @@ bool Application::initialize()
         return false;
     }
 
-    std::cout << "Application initialized." << std::endl;
+    window = SDL_CreateWindow(
+        "NovelEngine",
+        1280,
+        720,
+        0
+    );
+
+    if (window == nullptr)
+    {
+        std::cerr << "Failed to create window: "
+                  << SDL_GetError()
+                  << std::endl;
+        
+        SDL_Quit();
+        return false;
+    }
 
     state = State::Initialized;
+
+    std::cout << "Application initialized." << std::endl;    
 
     return true;
 }
 
+// 状態 Running の処理
 void Application::run()
 {
     if (state != State::Initialized)
@@ -40,41 +62,61 @@ void Application::run()
 
     using Clock = std::chrono::steady_clock;
 
-    auto previousTime = Clock::now();
+    constexpr double targetFramesPerSecond = 60.0;
 
-    int frameCount = 0;
+    const std::chrono::duration<double> targetFrameDuration {
+        1.0 / targetFramesPerSecond
+    };
+
+    auto previousTime = Clock::now();
 
     while (state == State::Running)
     {
-        const auto currentTime = Clock::now();
+        const auto frameStartTime = Clock::now();
 
         const std::chrono::duration<double> elapsed =
-            currentTime - previousTime;
+            frameStartTime - previousTime;
 
         const double deltaTime = elapsed.count();
 
-        previousTime = currentTime;
+        previousTime = frameStartTime;
 
-        std::cout << "--- Frame " << frameCount << " ---" << std::endl;
-
-        processInput();
+        processEvents();
         update(deltaTime);
         render();
 
-        ++frameCount;
-
-        if (frameCount >= 3)
+        if (state != State::Running)
         {
-            requestQuit();
+            break;
+        }
+
+        const auto frameEndTime = Clock::now();
+
+        const auto frameProcessingTime =
+            frameEndTime - frameStartTime;
+        
+        if (frameProcessingTime < targetFrameDuration)
+        {
+            const auto remainingTime =
+                targetFrameDuration - frameProcessingTime;
+            
+            std::this_thread::sleep_for(remainingTime);
         }
     }
 }
 
+// 状態を見て終了処理を行う
 void Application::shutdown()
 {
     if(state == State::Uninitialized)
     {
         return;
+    }
+
+    if (window != nullptr)
+    {
+        SDL_DestroyWindow(window);
+        window = nullptr;
     }
 
     SDL_Quit();
@@ -84,24 +126,33 @@ void Application::shutdown()
     std::cout << "Application shut down." << std::endl;
 }
 
-void Application::processInput()
+// SDLを用いて入力などのイベントを受け取って処理する
+void Application::processEvents()
 {
-    std::cout << "Process input." << std::endl;    
+    SDL_Event event;
+
+    while (SDL_PollEvent(&event))
+    {
+        if (event.type == SDL_EVENT_QUIT)
+        {
+            requestQuit();
+        }
+    }
 }
 
+// フレームごとの状態を更新する
 void Application::update(double deltaTime)
 {
-    std::cout << "Update game state. deltaTime = " 
-              << deltaTime
-              << " seconds."          
-              << std::endl;
+    static_cast<void>(deltaTime);
 }
 
+// 描画処理
 void Application::render()
 {
-    std::cout << "Render frame." << std::endl;
+
 }
 
+// 終了を要求する
 void Application::requestQuit()
 {
     if (state != State::Running)
