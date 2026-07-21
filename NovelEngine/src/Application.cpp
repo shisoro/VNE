@@ -1,4 +1,5 @@
 #include "Application.hpp"
+#include <chrono>
 #include <iostream>
 
 bool Application::initialize()
@@ -26,14 +27,27 @@ void Application::run()
 
     state = State::Running;
 
+    using Clock = std::chrono::steady_clock;
+
+    auto previousTime = Clock::now();
+
     int frameCount = 0;
 
     while (state == State::Running)
     {
-        std::cout << "Frame: " << frameCount << std::endl;
+        const auto currentTime = Clock::now();
+
+        const std::chrono::duration<double> elapsed =
+            currentTime - previousTime;
+
+        const double deltaTime = elapsed.count();
+
+        previousTime = currentTime;
+
+        std::cout << "--- Frame " << frameCount << " ---" << std::endl;
 
         processInput();
-        update();
+        update(deltaTime);
         render();
 
         ++frameCount;
@@ -62,9 +76,12 @@ void Application::processInput()
     std::cout << "Process input." << std::endl;    
 }
 
-void Application::update()
+void Application::update(double deltaTime)
 {
-    std::cout << "Update game state." << std::endl;
+    std::cout << "Update game state. deltaTime = " 
+              << deltaTime
+              << " seconds."          
+              << std::endl;
 }
 
 void Application::render()

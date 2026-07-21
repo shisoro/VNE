@@ -15,7 +15,7 @@ private:
     };
 
     void processInput();
-    void update();
+    void update(double deltaTime);
     void render();
     void requestQuit();
 
