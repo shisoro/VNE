@@ -13,6 +13,11 @@ namespace
     constexpr float messageBoxHeight = 180.0f;
 }
 
+Application::~Application()
+{
+    cleanup();
+}
+
 // 設定の初期化
 bool Application::initialize()
 {
@@ -24,6 +29,7 @@ bool Application::initialize()
         return true;
     }
 
+    // SDLの初期化
     if (!SDL_Init(SDL_INIT_VIDEO))
     {
         std::cerr << "Failed to initialize SDL: "
@@ -33,6 +39,9 @@ bool Application::initialize()
         return false;
     }
 
+    sdlInitialized = true;
+
+    // SDLWindowの初期化
     window = SDL_CreateWindow(
         "NovelEngine",
         windowWidth,
@@ -46,10 +55,11 @@ bool Application::initialize()
                   << SDL_GetError()
                   << std::endl;
         
-        SDL_Quit();
+        cleanup();
         return false;
     }
 
+    // SDLRenderの初期化
     renderer = SDL_CreateRenderer(
         window, // 描画先のウィンドウ
         nullptr // 使用する描画ドライバー（nullptrの場合はSDLに任せる）
@@ -61,10 +71,7 @@ bool Application::initialize()
                   << SDL_GetError()
                   << std::endl;
         
-        SDL_DestroyWindow(window);
-        window = nullptr;
-
-        SDL_Quit();
+        cleanup();
         return false;
     }
 
@@ -75,16 +82,49 @@ bool Application::initialize()
                   << SDL_GetError()
                   << std::endl;
         
-        SDL_DestroyRenderer(renderer);
-        renderer = nullptr;
-
-        SDL_DestroyWindow(window);
-        window = nullptr;
-
-        SDL_Quit();
+        cleanup();
         return false;
     }
 
+    // BMP画像を背景として描画（SDLSurfaceの初期化）
+    SDL_Surface* backgroundSurface =
+        SDL_LoadBMP("assets/background.bmp");
+
+    if (backgroundSurface == nullptr)
+    {
+        std::cerr << "Failed to load background image: "
+                  << SDL_GetError()
+                  << std::endl;
+
+        cleanup();
+        return false;
+    }
+
+    // SDLTextureの初期化
+    backgroundTexture =
+        SDL_CreateTextureFromSurface(
+            renderer,
+            backgroundSurface
+        );
+
+    if (backgroundTexture == nullptr)
+    {
+        std::cerr << "Failed to create background texture: "
+                  << SDL_GetError()
+                  << std::endl;
+                
+        SDL_DestroySurface(backgroundSurface);
+        backgroundSurface = nullptr;
+
+        cleanup();
+        return false;
+    }
+
+    // SDLSurfaceの破棄
+    SDL_DestroySurface(backgroundSurface);
+    backgroundSurface = nullptr;
+
+    // Stateを更新
     state = State::Initialized;
 
     std::cout << "Application initialized." << std::endl;    
@@ -157,21 +197,7 @@ void Application::shutdown()
         return;
     }
 
-    if (renderer != nullptr)
-    {
-        SDL_DestroyRenderer(renderer);
-        renderer = nullptr;
-    }
-
-    if (window != nullptr)
-    {
-        SDL_DestroyWindow(window);
-        window = nullptr;
-    }
-
-    SDL_Quit();
-
-    state = State::Uninitialized;
+    cleanup();
     
     std::cout << "Application shut down." << std::endl;
 }
@@ -209,6 +235,13 @@ void Application::render()
     );
 
     SDL_RenderClear(renderer);      // 背景を塗りつぶす（背景の初期化）
+
+    SDL_RenderTexture(
+        renderer,
+        backgroundTexture,
+        nullptr,
+        nullptr
+    );
 
     // メッセージウィンドウ
     const SDL_FRect messageBox{
@@ -248,4 +281,33 @@ void Application::requestQuit()
     std::cout << "Quit requested." << std::endl;
     
     state = State::Initialized;
+}
+
+void Application::cleanup()
+{
+    if (backgroundTexture != nullptr)
+    {
+        SDL_DestroyTexture(backgroundTexture);
+        backgroundTexture = nullptr;
+    }
+
+    if (renderer != nullptr)
+    {
+        SDL_DestroyRenderer(renderer);
+        renderer = nullptr;
+    }
+
+    if (window != nullptr)
+    {
+        SDL_DestroyWindow(window);
+        window = nullptr;
+    }
+
+    if (sdlInitialized)
+    {
+        SDL_Quit();
+        sdlInitialized = false;
+    }
+
+    state = State::Uninitialized;
 }
