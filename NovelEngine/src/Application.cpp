@@ -4,6 +4,15 @@
 #include <iostream>
 #include <thread>
 
+namespace
+{
+    constexpr int windowWidth = 1280;
+    constexpr int windowHeight = 720;
+
+    constexpr float messageBoxMargin = 60.0f;
+    constexpr float messageBoxHeight = 180.0f;
+}
+
 // 設定の初期化
 bool Application::initialize()
 {
@@ -26,8 +35,8 @@ bool Application::initialize()
 
     window = SDL_CreateWindow(
         "NovelEngine",
-        1280,
-        720,
+        windowWidth,
+        windowHeight,
         0
     );
 
@@ -52,6 +61,23 @@ bool Application::initialize()
                   << SDL_GetError()
                   << std::endl;
         
+        SDL_DestroyWindow(window);
+        window = nullptr;
+
+        SDL_Quit();
+        return false;
+    }
+
+    // ブレンドモードに設定（透明時の色の混合処理を有効にする）
+    if (!SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND))
+    {
+        std::cerr << "Failed to set render blend mode: "
+                  << SDL_GetError()
+                  << std::endl;
+        
+        SDL_DestroyRenderer(renderer);
+        renderer = nullptr;
+
         SDL_DestroyWindow(window);
         window = nullptr;
 
@@ -173,6 +199,7 @@ void Application::update(double deltaTime)
 // 描画処理
 void Application::render()
 {
+    // 背景
     SDL_SetRenderDrawColor(         // 描画色を設定する
         renderer,
         30, // red
@@ -182,6 +209,31 @@ void Application::render()
     );
 
     SDL_RenderClear(renderer);      // 背景を塗りつぶす（背景の初期化）
+
+    // メッセージウィンドウ
+    const SDL_FRect messageBox{
+        messageBoxMargin,                   // 長方形の左上のx座標
+        static_cast<float>(windowHeight)    // 長方形の左上のy座標
+            - messageBoxMargin
+            - messageBoxHeight,     
+        static_cast<float>(windowWidth)     // 長方形の幅
+            - messageBoxMargin * 2.0f,  
+        messageBoxHeight                    // 長方形の高さ
+    };
+
+    SDL_SetRenderDrawColor(
+        renderer,
+        10,
+        10,
+        20,
+        200
+    );
+
+    SDL_RenderFillRect(
+        renderer,
+        &messageBox
+    );
+
     SDL_RenderPresent(renderer);    // 完成した結果を画面へ表示
 }
 
