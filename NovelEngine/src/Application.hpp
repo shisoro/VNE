@@ -1,14 +1,12 @@
 #pragma once    
 
-struct SDL_Window;
-struct SDL_Renderer;  
-struct SDL_Texture;
+#include "Graphics.hpp"
 
 class Application
 {
 public:
     Application() = default;
-    ~Application();
+    ~Application() = default;
 
     // コピーコンストラクタの禁止（Application app2 = app1;）
     Application(const Application&) = delete;
@@ -35,13 +33,8 @@ private:
     void update(double deltaTime);
     void render();
     void requestQuit();
-    void cleanup();
 
     State state = State::Uninitialized;
 
-    bool sdlInitialized = false;
-
-    SDL_Window* window = nullptr;
-    SDL_Renderer* renderer = nullptr;
-    SDL_Texture* backgroundTexture = nullptr;
+    Graphics graphics;  // 所有者と同じオブジェクトは値として持つ
 };
