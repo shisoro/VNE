@@ -41,6 +41,24 @@ bool Application::initialize()
         return false;
     }
 
+    renderer = SDL_CreateRenderer(
+        window, // 描画先のウィンドウ
+        nullptr // 使用する描画ドライバー（nullptrの場合はSDLに任せる）
+    );
+
+    if (renderer == nullptr)
+    {
+        std::cerr << "Failed to create renderer: "
+                  << SDL_GetError()
+                  << std::endl;
+        
+        SDL_DestroyWindow(window);
+        window = nullptr;
+
+        SDL_Quit();
+        return false;
+    }
+
     state = State::Initialized;
 
     std::cout << "Application initialized." << std::endl;    
@@ -108,9 +126,15 @@ void Application::run()
 // 状態を見て終了処理を行う
 void Application::shutdown()
 {
-    if(state == State::Uninitialized)
+    if (state == State::Uninitialized)
     {
         return;
+    }
+
+    if (renderer != nullptr)
+    {
+        SDL_DestroyRenderer(renderer);
+        renderer = nullptr;
     }
 
     if (window != nullptr)
@@ -149,7 +173,16 @@ void Application::update(double deltaTime)
 // 描画処理
 void Application::render()
 {
+    SDL_SetRenderDrawColor(         // 描画色を設定する
+        renderer,
+        30, // red
+        30, // green
+        45, // blue
+        255 // alpha（不透明度）
+    );
 
+    SDL_RenderClear(renderer);      // 背景を塗りつぶす（背景の初期化）
+    SDL_RenderPresent(renderer);    // 完成した結果を画面へ表示
 }
 
 // 終了を要求する

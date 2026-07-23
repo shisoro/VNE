@@ -1,6 +1,7 @@
 #pragma once    
 
-struct SDL_Window;  
+struct SDL_Window;
+struct SDL_Renderer;  
 
 class Application
 {
@@ -24,4 +25,5 @@ private:
 
     State state = State::Uninitialized;
     SDL_Window* window = nullptr;
+    SDL_Renderer* renderer = nullptr;
 };
