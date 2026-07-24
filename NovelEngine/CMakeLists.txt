@@ -10,6 +10,7 @@ add_executable(     # 実行ファイルを作る
     src/Application.cpp
     src/Graphics.cpp
     src/Input.cpp
+    src/Scenario.cpp
 )
 
 # NovelEngineをC++17としてコンパイル
@@ -26,6 +27,15 @@ target_link_libraries(
     SDL3::SDL3
 )
 
+# ソースコードと実行時文字列をUTF-8として明示
+if(MSVC)
+    target_compile_options(
+        NovelEngine
+        PRIVATE
+        /utf-8        
+    )
+endif()
+
 # 指定したターゲットのビルド後にコマンドを実行
 add_custom_command(
     TARGET NovelEngine
@@ -35,3 +45,4 @@ add_custom_command(
         "$<TARGET_FILE_DIR:NovelEngine>/assets" # NovelEngineの実行ファイルが生成されるディレクトリ（通常はbuild/Debug/assets）
     COMMENT "Copying assets"
 )
+

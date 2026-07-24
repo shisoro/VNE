@@ -27,6 +27,10 @@ bool Application::initialize()
 
     std::cout << "Application initialized." << std::endl;    
 
+    std::cout << "Current text: " 
+              << scenario.currentText()
+              << std::endl;
+
     return true;
 }
 
@@ -65,15 +69,16 @@ void Application::run()
 
         input.beginFrame();
         input.processEvents();
-        
+
         processInput(); // 入力結果をApplicationが解釈
-        update(deltaTime);
-        render();
 
         if (state != State::Running)
         {
             break;
         }
+
+        update(deltaTime);
+        render();        
 
         const auto frameEndTime = Clock::now();
 
@@ -112,12 +117,22 @@ void Application::processInput()
     if (input.quitRequested())
     {
         requestQuit();
+        return;
     }
 
     if (input.advancePressed())
     {
-        std::cout << "Advance requested."
-                  << std::endl;
+        if (scenario.advance())
+        {
+            std::cout << "Current text: "
+                      << scenario.currentText()
+                      << std::endl;
+        }
+        else
+        {
+            std::cout << "Reached the end of the scenario."
+                      << std::endl;
+        }
     }
 }
 

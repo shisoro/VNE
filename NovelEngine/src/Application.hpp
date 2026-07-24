@@ -2,6 +2,7 @@
 
 #include "Graphics.hpp"
 #include "Input.hpp"
+#include "Scenario.hpp"
 
 class Application
 {
@@ -39,4 +40,5 @@ private:
 
     Graphics graphics;  // 所有者と同じオブジェクトは値として持つ
     Input input;
+    Scenario scenario;
 };
