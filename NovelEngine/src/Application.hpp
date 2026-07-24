@@ -1,6 +1,7 @@
 #pragma once    
 
 #include "Graphics.hpp"
+#include "Input.hpp"
 
 class Application
 {
@@ -29,7 +30,7 @@ private:
         Running
     };
 
-    void processEvents();
+    void processInput();
     void update(double deltaTime);
     void render();
     void requestQuit();
@@ -37,4 +38,5 @@ private:
     State state = State::Uninitialized;
 
     Graphics graphics;  // 所有者と同じオブジェクトは値として持つ
+    Input input;
 };

@@ -9,6 +9,7 @@ add_executable(     # 実行ファイルを作る
     src/main.cpp    # 使用するソース
     src/Application.cpp
     src/Graphics.cpp
+    src/Input.cpp
 )
 
 # NovelEngineをC++17としてコンパイル

@@ -1,5 +1,4 @@
 #include "Application.hpp"
-#include <SDL3/SDL.h>
 #include <chrono>
 #include <iostream>
 #include <thread>
@@ -64,7 +63,10 @@ void Application::run()
 
         previousTime = frameStartTime;
 
-        processEvents();
+        input.beginFrame();
+        input.processEvents();
+        
+        processInput(); // 入力結果をApplicationが解釈
         update(deltaTime);
         render();
 
@@ -104,16 +106,18 @@ void Application::shutdown()
 }
 
 // SDLを用いて入力などのイベントを受け取って処理する
-void Application::processEvents()
+void Application::processInput()
 {
-    SDL_Event event;
 
-    while (SDL_PollEvent(&event))
+    if (input.quitRequested())
     {
-        if (event.type == SDL_EVENT_QUIT)
-        {
-            requestQuit();
-        }
+        requestQuit();
+    }
+
+    if (input.advancePressed())
+    {
+        std::cout << "Advance requested."
+                  << std::endl;
     }
 }
 
